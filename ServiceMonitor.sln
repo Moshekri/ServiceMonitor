@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceMonitor", "ServiceMonitor\ServiceMonitor.csproj", "{2F6B0188-6BF8-4E38-9869-EA3BF83E7C35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{6F748921-7194-445F-B113-2AE529BC1C1D}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ServiceMonitorSetup", "ServiceMonitorSetup\ServiceMonitorSetup.vdproj", "{594DEAB1-7DC1-4930-A51C-1140D3FAF123}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F6B0188-6BF8-4E38-9869-EA3BF83E7C35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F6B0188-6BF8-4E38-9869-EA3BF83E7C35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F6B0188-6BF8-4E38-9869-EA3BF83E7C35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F6B0188-6BF8-4E38-9869-EA3BF83E7C35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F748921-7194-445F-B113-2AE529BC1C1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F748921-7194-445F-B113-2AE529BC1C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F748921-7194-445F-B113-2AE529BC1C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F748921-7194-445F-B113-2AE529BC1C1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{594DEAB1-7DC1-4930-A51C-1140D3FAF123}.Debug|Any CPU.ActiveCfg = Debug
+		{594DEAB1-7DC1-4930-A51C-1140D3FAF123}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A21E8AC-4128-4E16-8916-144E5237EBFA}
+	EndGlobalSection
+EndGlobal
