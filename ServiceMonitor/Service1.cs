@@ -47,6 +47,7 @@ namespace ServiceMonitor
         int timeout = 180;
         string[] services;
         int[] timeouts;
+        bool[] sentMail;
         Logger logger;
         string smtpHost;
         int smtpPort;
@@ -76,6 +77,8 @@ namespace ServiceMonitor
             logger.Debug($"Service list : {serviceList}");
             services = serviceList.Split(',');
             timeouts = new int[services.Length];
+            sentMail = new bool[services.Length];
+
             for (int i = 0; i < timeouts.Length; i++)
             {
                 timeouts[i] = 0;
@@ -107,6 +110,22 @@ namespace ServiceMonitor
                     serviceController.Refresh();
                     if (serviceController.Status == ServiceControllerStatus.Stopped)
                     {
+                        if (sentMail[i] == false)
+                        {
+                            string zippedLogPath = ConfigurationManager.AppSettings["LogPath"];
+                            try
+                            {
+                                SendMail(zippedLogPath + "\\temp\\logs.zip", $"Service {services[i]} has stopped");
+
+                            }
+                            catch (Exception ex)
+                            {
+
+                                logger.Debug(ex.Message);
+                            }
+                            sentMail[i] = true;
+                        }
+                       
                         timeouts[i]++;
                         if (timeouts[i] % 10 ==0)
                         {
@@ -130,11 +149,7 @@ namespace ServiceMonitor
         {
             timer.Enabled = false;
             timer.Stop();
-
-            SmtpClient mailClient = new SmtpClient(smtpHost, smtpPort);
-            
-            string from = ConfigurationManager.AppSettings["FromMail"];
-            string[] to = ConfigurationManager.AppSettings["ToMail"].Split(',');
+                            
             string zippedLogPath = ConfigurationManager.AppSettings["LogPath"];
             if (File.Exists(zippedLogPath + "\\temp\\logs.zip"))
             {
@@ -152,9 +167,30 @@ namespace ServiceMonitor
             {
                 string d = "ff";
             }
+            SendMail(zippedLogPath);
+
+
+           
+            for (int i = 10; i > 0 ; i--)
+            {
+                logger.Info($"Server restart in {i} Seconds...");
+                Thread.Sleep(1000);
+            }
+            logger.Info("Server restarting now !! ");
+            Restrt r = new Restrt();
+            r.RestartComputer();
+           // System.Diagnostics.Process.Start("shutdown.exe", "-r -t 0 /f");
+        }
+
+        private void SendMail(string zippedLogPath,string msg = "Muse server has restarted due to service error")
+        {
+            string[] to = ConfigurationManager.AppSettings["ToMail"].Split(',');
+            SmtpClient mailClient = new SmtpClient(smtpHost, smtpPort);
+            string from = ConfigurationManager.AppSettings["FromMail"];
             foreach (var destination in to)
             {
-                MailMessage message = new MailMessage(from, destination, "Muse server has restarted due to service error", "");
+                logger.Debug("Sending Email");
+                MailMessage message = new MailMessage(from, destination, msg, "");
                 message.Attachments.Add(new Attachment(zippedLogPath + "\\logs.zip"));
                 try
                 {
@@ -165,18 +201,8 @@ namespace ServiceMonitor
 
                     logger.Debug(ex.Message);
                 }
-                
-            }
 
-
-           
-            for (int i = 10; i > 0 ; i--)
-            {
-                logger.Info($"Server restart in {i} Seconds...");
-                Thread.Sleep(1000);
             }
-            logger.Info("Server restarting now !! ");
-            System.Diagnostics.Process.Start("shutdown.exe", "-r -t 0 /f");
         }
 
         protected override void OnStart(string[] args)
