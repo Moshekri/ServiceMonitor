@@ -1,6 +1,6 @@
 ﻿namespace ServiceMonitor
 {
-    partial class Service1
+    partial class ServicesMonitor
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,9 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.CanStop = true;
+            // 
+            // ServicesMonitor
+            // 
             this.ServiceName = "Service1";
+
         }
 
         #endregion

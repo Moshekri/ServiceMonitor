@@ -20,7 +20,7 @@ namespace ServiceMonitor
             logger = LogManager.GetCurrentClassLogger();
 #if DEBUG
             logger.Info("Running Service In Debug Mode...");
-            Service1 sv1 = new Service1();
+            ServicesMonitor sv1 = new ServicesMonitor();
             sv1.DebugStart();
             Thread.Sleep(Timeout.Infinite);
 
