@@ -19,41 +19,40 @@ namespace ConfigManager
         public ServiceMonitorConfiguration GetConfiguration()
         {
             ServiceMonitorConfiguration config = new ServiceMonitorConfiguration();
-
+            config.UseSSL = bool.Parse(ConfigurationManager.AppSettings["usessl"]);
+            config.SmtpUsername = ConfigurationManager.AppSettings["SmtpUsername"];
+            config.SmtpPassword = ConfigurationManager.AppSettings["SmtpPassword"];
             config.ServicesToMonitor = ConfigurationManager.AppSettings["ServiceList"].Split(',');
-            config.KeywordsForLogMonitor= ConfigurationManager.AppSettings["Keywords"].Split(',');
+            config.KeywordsForLogMonitor = ConfigurationManager.AppSettings["Keywords"].Split(',');
             config.SourcesForLogMonitor = ConfigurationManager.AppSettings["Sources"].Split(',');
-            int interval;
-            bool success = int.TryParse(ConfigurationManager.AppSettings["Timeout"], out interval);
-            if (!success)
-            {
-                config.CheckInterval = 10 *1000;
-                logger.Error("Could not parse Timeout parameter , setting to default (10 seconds)");
-            }
-            else
-            {
-                
-                config.CheckInterval = interval*1000;
-            }
+            config.CheckInterval = ParseNumber(ConfigurationManager.AppSettings["Timeout"], 10) * 1000;
             config.SmtpAddress = ConfigurationManager.AppSettings["SMTP"];
-            int port;
-            success = int.TryParse(ConfigurationManager.AppSettings["SMTP"],out port);
-            if (success)
-            {
-                config.SmtpPort = port;
-            }
-            else
-            {
-                config.SmtpPort = 25; // default smtp port
-                logger.Error("Cannot convert SMTPPORT to int ,  setting to default (25)");
-            }
+            config.SmtpPort = ParseNumber(ConfigurationManager.AppSettings["SMTPport"], 25);
             config.FromMailAddress = ConfigurationManager.AppSettings["FromMail"];
             config.ToMailAddress = ConfigurationManager.AppSettings["ToMail"].Split(',');
+            config.ResetDataInterval = ParseNumber(ConfigurationManager.AppSettings["ResetDataInterval"], 5) * 60000;
+            config.SslPort = ParseNumber(ConfigurationManager.AppSettings["SslPort"], 443);
 
 
             return config;
 
 
+        }
+
+
+        private int ParseNumber(string data, int defaltValue)
+        {
+            int value;
+            bool success = int.TryParse(data, out value);
+            if (success)
+            {
+                return value;
+            }
+            else
+            {
+                logger.Debug($"could not parse {data} to a string ! using defalt value of {defaltValue}");
+            }
+                return defaltValue;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Timers;
 using Common;
 using ConfigManager;
 using MessageSender;
+using NLog;
 
 namespace ServicesMonitorController
 {
@@ -18,6 +19,7 @@ namespace ServicesMonitorController
         Timer timer;
         Timer MasterTimer;
         ServicesChecker checker;
+        Logger logger;
 
         public ServiceMonitorController(ServiceMonitorConfiguration config)
         {
@@ -25,15 +27,15 @@ namespace ServicesMonitorController
             configuration = config;
             originalConfig = CreateCopy(config);
             timer = new Timer(config.CheckInterval);
-            MasterTimer = new Timer(5*60 * 1000);
+
+            MasterTimer = new Timer(5 * 60 * 1000);
             MasterTimer.Elapsed += MasterTimer_Elapsed;
             timer.Elapsed += Timer_Elapsed;
+            logger = NLog.LogManager.GetCurrentClassLogger();
         }
 
         private ServiceMonitorConfiguration CreateCopy(ServiceMonitorConfiguration config)
         {
-
-
             ServiceMonitorConfiguration newConfig = new ServiceMonitorConfiguration();
             newConfig.CheckInterval = config.CheckInterval;
             newConfig.FromMailAddress = config.FromMailAddress;
@@ -46,12 +48,17 @@ namespace ServicesMonitorController
             return newConfig;
         }
 
+        /// <summary>
+        /// This will reset all changes done when services were stopped effectevilly creatint a reapeating 
+        /// e-mail message every x minutes (
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MasterTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             ConfManager cnfman = new ConfManager();
-           configuration= cnfman.GetConfiguration();
+            configuration = cnfman.GetConfiguration();
 
-                
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -63,16 +70,13 @@ namespace ServicesMonitorController
                 var s = serviceList.FirstOrDefault(ser => ser.ServiceName == service);
                 if (s != null)
                 {
-
-
                     var status = checker.CheckServiceStatus(service);
                     switch (status)
                     {
 
-                        case System.ServiceProcess.ServiceControllerStatus.Stopped:
-                        case System.ServiceProcess.ServiceControllerStatus.StopPending:
+                        case ServiceControllerStatus.Stopped:
+                        case ServiceControllerStatus.StopPending:
 
-                            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
                             logger.Info($"Service {service} has stopped");
                             var IsserviceStarted = checker.StartService(service);
                             if (!IsserviceStarted)
@@ -113,7 +117,7 @@ namespace ServicesMonitorController
         public void Start()
         {
             timer.Enabled = true;
-           MasterTimer.Enabled = true;
+            MasterTimer.Enabled = true;
         }
         public void Stop()
         {

@@ -14,6 +14,7 @@ namespace Common
             ServicesToMonitor= KeywordsForLogMonitor=SourcesForLogMonitor =ToMailAddress = new string[20];
         }
         public int CheckInterval { get; set; }
+        public int ResetDataInterval { get; set; }
         public string[] ServicesToMonitor { get; set; }
         public string[] KeywordsForLogMonitor { get; set; }
         public string[] SourcesForLogMonitor { get; set; }
@@ -21,7 +22,12 @@ namespace Common
         public int SmtpPort { get; set; }
         public string FromMailAddress { get; set; }
         public string[] ToMailAddress { get; set; }
+        public string  SmtpUsername { get; set; }
+        public string  SmtpPassword { get; set; }
+        public bool UseSSL { get; set; }
+        public int SslPort { get; set; }
 
-        
+
+
     }
 }

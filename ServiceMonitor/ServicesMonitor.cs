@@ -1,20 +1,6 @@
 ﻿using NLog;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Net.Mail;
-using System.IO.Compression;
-using System.IO;
 using ConfigManager;
 using Common;
 using ServicesMonitorController;
@@ -53,9 +39,6 @@ namespace ServiceMonitor
         ConfManager confManager;
         ServiceMonitorConfiguration config;
         ServiceMonitorController serviceMonitorController;
-
-
-
 
         public void DebugStart()
         {
